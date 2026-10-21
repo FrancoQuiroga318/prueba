@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Examen{% endblock %}
+{% block content %}
+<section id="exam">
+  <h1>Modo examen</h1>
+
+  <form id="exam-setup" class="card">
+    <fieldset>
+      <legend>Unidades a evaluar</legend>
+      <label class="inline"><input type="checkbox" id="all-units" checked> Todas</label>
+      <div class="unit-checks">
+        {% for u in units %}
+        <label class="inline"><input type="checkbox" name="unit" value="{{ u.id }}" checked> {{ loop.index }}. {{ u.title }}</label>
+        {% endfor %}
+      </div>
+    </fieldset>
+    <label for="exam-count">Cantidad de preguntas</label>
+    <select id="exam-count">
+      <option value="5">5</option>
+      <option value="10" selected>10</option>
+      <option value="20">20</option>
+      <option value="30">30</option>
+    </select>
+    <p class="muted small">Las respuestas correctas se muestran recién al terminar.</p>
+    <p id="exam-error" class="notice" hidden></p>
+    <button class="btn btn-primary" type="submit">Comenzar examen</button>
+  </form>
+
+  <article id="exam-question" class="card" hidden>
+    <header class="card-meta"><span id="e-counter"></span><span class="badge" id="e-type"></span></header>
+    <p class="muted small" id="e-unit"></p>
+    <h2 id="e-text" class="question"></h2>
+    <label for="e-answer">Tu respuesta</label>
+    <textarea id="e-answer" rows="6"></textarea>
+    <div class="actions">
+      <button id="e-prev" class="btn" type="button">Anterior</button>
+      <button id="e-next" class="btn btn-primary" type="button">Siguiente</button>
+    </div>
+  </article>
+
+  <section id="exam-review" hidden>
+    <h2>Corregí tu examen</h2>
+    <p class="muted">Compará tu respuesta con la esperada y elegí cómo te fue en cada pregunta.</p>
+    <ol id="review-list" class="review-list"></ol>
+    <p id="grade-error" class="notice" hidden></p>
+    <button id="grade-btn" class="btn btn-primary" type="button">Ver resultado</button>
+  </section>
+
+  <section id="exam-result" class="card" hidden>
+    <h2>Resultado</h2>
+    <p class="score" id="r-score"></p>
+    <p id="r-counts"></p>
+    <h3>Por unidad</h3>
+    <ul id="r-units"></ul>
+    <h3>Temas para repasar</h3>
+    <ul id="r-topics"></ul>
+    <div class="actions">
+      <button id="new-exam" class="btn btn-primary" type="button">Nuevo examen</button>
+      <a class="btn" href="/repaso">Ir al repaso</a>
+    </div>
+  </section>
+</section>
+{% endblock %}

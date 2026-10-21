@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Sistemas Operativos{% endblock %} · Estudio</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+</head>
+<body data-page="{{ page }}">
+  <header class="site-header">
+    <a class="brand" href="/">📘 Sistemas Operativos</a>
+    <nav>
+      <a href="/" {% if page == 'inicio' %}aria-current="page"{% endif %}>Inicio</a>
+      <a href="/estudiar" {% if page == 'estudiar' %}aria-current="page"{% endif %}>Estudiar</a>
+      <a href="/tarjetas" {% if page == 'tarjetas' %}aria-current="page"{% endif %}>Tarjetas</a>
+      <a href="/examen" {% if page == 'examen' %}aria-current="page"{% endif %}>Examen</a>
+      <a href="/repaso" {% if page == 'repaso' %}aria-current="page"{% endif %}>Repaso</a>
+      <a href="/progreso" {% if page == 'progreso' %}aria-current="page"{% endif %}>Progreso</a>
+    </nav>
+  </header>
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="site-footer">Contenido basado exclusivamente en «Sistemas Operativos.pdf».</footer>
+  <script src="{{ url_for('static', path='js/app.js') }}"></script>
+</body>
+</html>

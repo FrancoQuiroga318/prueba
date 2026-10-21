@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Progreso{% endblock %}
+{% block content %}
+<h1>Tu progreso</h1>
+
+<section class="summary" aria-label="Resumen">
+  <div class="stat"><span class="stat-value">{{ stats.totals.progress_pct }}%</span><span class="stat-label">dominado</span></div>
+  <div class="stat"><span class="stat-value">{{ stats.totals.studied }}/{{ stats.totals.total }}</span><span class="stat-label">estudiadas</span></div>
+  <div class="stat"><span class="stat-value">{{ stats.answers.total }}</span><span class="stat-label">respuestas registradas</span></div>
+  <div class="stat {% if stats.totals.due %}stat-alert{% endif %}"><span class="stat-value">{{ stats.totals.due }}</span><span class="stat-label">pendientes de repaso</span></div>
+</section>
+
+<section>
+  <h2>Autoevaluaciones</h2>
+  <p>
+    <span class="badge badge-ok">La recordé bien: {{ stats.answers.bien }}</span>
+    <span class="badge badge-partial">Parcialmente: {{ stats.answers.parcial }}</span>
+    <span class="badge badge-no">No la recordé: {{ stats.answers.no }}</span>
+  </p>
+</section>
+
+<section>
+  <h2>Por unidad</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Unidad</th><th>Preguntas</th><th>Estudiadas</th><th>Aprendiendo</th><th>En repaso</th><th>Dominadas</th><th>Pendientes</th><th>Dominio</th></tr>
+      </thead>
+      <tbody>
+        {% for u in stats.units %}
+        <tr>
+          <td><a href="/estudiar?unidad={{ u.id }}">{{ loop.index }}. {{ u.title }}</a></td>
+          <td>{{ u.total }}</td><td>{{ u.studied }}</td><td>{{ u.learning }}</td><td>{{ u.reviewing }}</td>
+          <td>{{ u.mastered }}</td><td>{{ u.due }}</td>
+          <td><div class="bar small"><span style="width: {{ u.progress_pct }}%"></span></div>{{ u.progress_pct }}%</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="muted small">Una pregunta queda «dominada» al recordarla bien 2 veces seguidas. «No la recordé» la devuelve a la próxima sesión; «Parcialmente» la programa para mañana; cada acierto alarga el intervalo (1, 3, 7, 14, 30 y 60 días).</p>
+</section>
+
+<section>
+  <h2>Preguntas que más te cuestan</h2>
+  {% if stats.hardest %}
+  <ol>
+    {% for q in stats.hardest %}
+    <li>{{ q.question }} <span class="muted small">({{ q.unit_title }} · pág. {{ q.page }} · {{ q.fails }} {% if q.fails == 1 %}fallo{% else %}fallos{% endif %})</span></li>
+    {% endfor %}
+  </ol>
+  {% else %}
+  <p class="muted">Todavía no hay preguntas falladas.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>Exámenes</h2>
+  {% if stats.exams %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Fecha</th><th>Unidades</th><th>Preguntas</th><th>Puntaje</th><th>%</th></tr></thead>
+      <tbody>
+        {% for e in stats.exams %}
+        <tr>
+          <td>{{ e.finished_at[:16].replace('T', ' ') }}</td>
+          <td>{% if e.unit_titles|length == units|length %}Todas{% else %}{{ e.unit_titles|join(', ') }}{% endif %}</td>
+          <td>{{ e.total }}</td><td>{{ e.score }}</td><td>{{ e.percentage }}%</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="muted">Todavía no realizaste exámenes. <a href="/examen">Hacer uno</a>.</p>
+  {% endif %}
+</section>
+{% endblock %}

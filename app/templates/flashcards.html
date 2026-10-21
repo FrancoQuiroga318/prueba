@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Tarjetas{% endblock %}
+{% block content %}
+<section id="flashcards" data-unit="{{ selected_unit }}">
+  <h1>Tarjetas de memoria</h1>
+  <p class="muted">Leé el frente, intentá recordar la respuesta y dá vuelta la tarjeta.</p>
+
+  <form id="cards-setup" class="setup">
+    <label for="unit-select">Unidad</label>
+    <select id="unit-select" name="unidad">
+      <option value="">Todas las unidades</option>
+      {% for u in units %}
+      <option value="{{ u.id }}" {% if u.id == selected_unit %}selected{% endif %}>{{ loop.index }}. {{ u.title }}</option>
+      {% endfor %}
+    </select>
+    <label class="inline"><input type="checkbox" id="shuffle"> Mezclar</label>
+    <button class="btn btn-primary" type="submit">Comenzar</button>
+  </form>
+
+  <p id="cards-empty" class="notice" hidden></p>
+
+  <div id="card-area" hidden>
+    <p class="card-meta"><span id="c-counter"></span> <span class="badge" id="c-status"></span></p>
+    <article id="flashcard" class="flashcard">
+      <div class="face front">
+        <p class="muted small" id="c-topic"></p>
+        <p id="c-front" class="question"></p>
+      </div>
+      <div class="face back" hidden>
+        <div id="c-back" class="answer"></div>
+        <p class="ref" id="c-ref"></p>
+      </div>
+    </article>
+    <button id="flip-btn" class="btn btn-primary" type="button">Dar vuelta</button>
+    <div id="card-grade" class="grade-buttons" hidden>
+      <button class="btn btn-no" data-result="no" type="button">No la recordé</button>
+      <button class="btn btn-partial" data-result="parcial" type="button">Parcialmente</button>
+      <button class="btn btn-ok" data-result="bien" type="button">La recordé bien</button>
+    </div>
+    <p class="muted small" id="card-tally"></p>
+  </div>
+
+  <section id="cards-done" class="card" hidden>
+    <h2>¡Terminaste las tarjetas!</h2>
+    <p id="cards-summary"></p>
+    <div class="actions">
+      <button class="btn btn-primary" id="cards-restart" type="button">Otra ronda</button>
+      <a class="btn" href="/progreso">Ver progreso</a>
+    </div>
+  </section>
+</section>
+{% endblock %}

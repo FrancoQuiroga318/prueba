@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}{% if mode == 'repaso' %}Repaso{% else %}Estudiar{% endif %}{% endblock %}
+{% block content %}
+<section id="study" data-mode="{{ mode }}" data-unit="{{ selected_unit }}">
+  <h1>{% if mode == 'repaso' %}Repaso de pendientes{% else %}Estudiar por tema{% endif %}</h1>
+  <p class="muted">
+    {% if mode == 'repaso' %}Preguntas que fallaste, respondiste parcialmente o cuya fecha de repaso ya llegó.
+    {% else %}Primero aparecen las preguntas pendientes de repaso, luego las nuevas y por último el resto.{% endif %}
+  </p>
+
+  <form id="study-setup" class="setup">
+    <label for="unit-select">Unidad</label>
+    <select id="unit-select" name="unidad">
+      <option value="">Todas las unidades</option>
+      {% for u in units %}
+      <option value="{{ u.id }}" {% if u.id == selected_unit %}selected{% endif %}>{{ loop.index }}. {{ u.title }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn btn-primary" type="submit">Comenzar</button>
+  </form>
+
+  <p id="study-empty" class="notice" hidden></p>
+
+  <article id="study-card" class="card" hidden>
+    <header class="card-meta">
+      <span id="q-counter"></span>
+      <span class="badge" id="q-type"></span>
+      <span class="badge" id="q-status"></span>
+    </header>
+    <p class="muted small" id="q-topic"></p>
+    <h2 id="q-text" class="question"></h2>
+
+    <label for="user-answer">Tu respuesta</label>
+    <textarea id="user-answer" rows="5" placeholder="Escribí lo que recuerdes antes de revelar la respuesta…"></textarea>
+    <button id="reveal-btn" class="btn btn-primary" type="button">Revelar respuesta</button>
+
+    <div id="answer-box" hidden>
+      <h3>Respuesta esperada</h3>
+      <div id="q-answer" class="answer"></div>
+      <p class="ref" id="q-ref"></p>
+      <p>¿Cómo te fue?</p>
+      <div class="grade-buttons">
+        <button class="btn btn-no" data-result="no" type="button">No la recordé</button>
+        <button class="btn btn-partial" data-result="parcial" type="button">Parcialmente</button>
+        <button class="btn btn-ok" data-result="bien" type="button">La recordé bien</button>
+      </div>
+    </div>
+  </article>
+
+  <section id="study-done" class="card" hidden>
+    <h2>¡Sesión terminada!</h2>
+    <p id="done-summary"></p>
+    <div class="actions">
+      <button class="btn btn-primary" id="restart-btn" type="button">Estudiar de nuevo</button>
+      <a class="btn" href="/repaso">Ir al repaso</a>
+      <a class="btn" href="/progreso">Ver progreso</a>
+    </div>
+  </section>
+</section>
+{% endblock %}

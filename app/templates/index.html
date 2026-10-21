@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Inicio{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Estudiá Sistemas Operativos</h1>
+  <p>Practicá recordar de memoria: leé la pregunta, escribí tu respuesta y recién después mirá la correcta.</p>
+  <div class="actions">
+    <a class="btn btn-primary" href="/estudiar">Comenzar a estudiar</a>
+    <a class="btn" href="/examen">Realizar un examen</a>
+    <a class="btn" href="/repaso">Repasar pendientes ({{ stats.totals.due }})</a>
+  </div>
+</section>
+
+<section class="summary" aria-label="Resumen">
+  <div class="stat"><span class="stat-value">{{ stats.totals.total }}</span><span class="stat-label">preguntas</span></div>
+  <div class="stat"><span class="stat-value">{{ stats.totals.studied }}</span><span class="stat-label">estudiadas</span></div>
+  <div class="stat"><span class="stat-value">{{ stats.totals.mastered }}</span><span class="stat-label">dominadas</span></div>
+  <div class="stat {% if stats.totals.due %}stat-alert{% endif %}"><span class="stat-value">{{ stats.totals.due }}</span><span class="stat-label">pendientes de repaso</span></div>
+</section>
+
+<section>
+  <h2>Progreso general</h2>
+  <div class="bar" role="progressbar" aria-valuenow="{{ stats.totals.progress_pct }}" aria-valuemin="0" aria-valuemax="100">
+    <span style="width: {{ stats.totals.progress_pct }}%"></span>
+  </div>
+  <p class="muted">{{ stats.totals.progress_pct }}% dominado · {{ stats.totals.studied_pct }}% estudiado al menos una vez</p>
+</section>
+
+<section>
+  <h2>Unidades y temas</h2>
+  <ul class="unit-list">
+    {% for u in stats.units %}
+    <li class="unit-card">
+      <div class="unit-head">
+        <h3>{{ loop.index }}. {{ u.title }}</h3>
+        <span class="muted">Págs. {{ u.pages[0] }}–{{ u.pages[1] }}</span>
+      </div>
+      <p class="muted">{{ u.total }} preguntas · {{ u.mastered }} dominadas · {{ u.due }} pendientes</p>
+      <div class="bar small"><span style="width: {{ u.progress_pct }}%"></span></div>
+      <details>
+        <summary>Ver temas</summary>
+        <ul class="topics">
+          {% for t in topics[u.id] %}<li>{{ t }}</li>{% endfor %}
+        </ul>
+      </details>
+      <div class="actions">
+        <a class="btn btn-small btn-primary" href="/estudiar?unidad={{ u.id }}">Estudiar</a>
+        <a class="btn btn-small" href="/tarjetas?unidad={{ u.id }}">Tarjetas</a>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}
